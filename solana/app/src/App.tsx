@@ -8,7 +8,7 @@ import { Arena } from "./components/Board";
 import { Thread } from "./components/Thread";
 import { ProfilePage } from "./components/Profile";
 import { DaoPage } from "./components/Dao";
-import { Logo } from "./components/Logo";
+import { Logo, Star } from "./components/Logo";
 import { demo } from "./lib/demo";
 import { Onboarding, AdminSetup, Toasts } from "./components/Common";
 
@@ -82,9 +82,10 @@ function Shell() {
       </div>
 
       <header className="frame head">
-        <a className="star" href={swap} target="_blank" rel="noreferrer" title="Buy $TIME"><span>Buy<br />$TIME</span></a>
+        <Star href={swap} />
         <div className="logoblock" onClick={() => go("arena")}>
-          <Logo size={84} />
+          <Logo size={118} />
+          <div className="title">BattleCHAN</div>
         </div>
         <button className="greenbtn createbtn" onClick={() => { go("arena"); setComposer((c) => !c); }}>Create Post</button>
       </header>
