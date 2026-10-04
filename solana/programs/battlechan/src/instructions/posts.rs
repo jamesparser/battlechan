@@ -95,6 +95,7 @@ pub fn create_post(
     p.qualified_likes = 0;
     p.burned_from_down = 0;
     p.dao_from_down = 0;
+    p.reports = 0;
     p.archived = false;
     p.poll_options = poll_options;
     p.poll_votes = [0; 4];
@@ -295,5 +296,29 @@ pub fn trade_post(ctx: Context<TradePost>, price: u64) -> Result<()> {
         )?;
     }
     ctx.accounts.post.owner = ctx.accounts.buyer.key();
+    Ok(())
+}
+
+#[derive(Accounts)]
+pub struct ReportPost<'info> {
+    #[account(mut)]
+    pub reporter: Signer<'info>,
+    #[account(seeds = [b"profile", reporter.key().as_ref()], bump = reporter_profile.bump)]
+    pub reporter_profile: Box<Account<'info, UserProfile>>,
+    #[account(mut, seeds = [b"post", post.id.to_le_bytes().as_ref()], bump = post.bump)]
+    pub post: Box<Account<'info, Post>>,
+    #[account(
+        init, payer = reporter, space = 8 + Report::INIT_SPACE,
+        seeds = [b"report", post.key().as_ref(), reporter.key().as_ref()], bump
+    )]
+    pub report: Box<Account<'info, Report>>,
+    pub system_program: Program<'info, System>,
+}
+
+/// 🔞 Flag a post for admin review (one report per wallet per post).
+pub fn report_post(ctx: Context<ReportPost>) -> Result<()> {
+    ctx.accounts.report.at = Clock::get()?.unix_timestamp;
+    let p = &mut ctx.accounts.post;
+    p.reports = p.reports.saturating_add(1);
     Ok(())
 }

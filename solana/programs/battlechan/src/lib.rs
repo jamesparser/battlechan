@@ -63,6 +63,9 @@ pub mod battlechan {
     ) -> Result<()> {
         posts::buy_profile_decoration(ctx, decoration)
     }
+    pub fn report_post(ctx: Context<ReportPost>) -> Result<()> {
+        posts::report_post(ctx)
+    }
     pub fn trade_post(ctx: Context<TradePost>, price: u64) -> Result<()> {
         posts::trade_post(ctx, price)
     }

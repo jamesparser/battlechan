@@ -4,38 +4,48 @@ import { StoreProvider, useStore } from "./store";
 import { seasonalTheme } from "./lib/badges";
 import { explorerAddr, PROGRAM_ID, CLUSTER } from "./lib/chain";
 import { fmtKarma, fmtTime } from "./lib/format";
-import { Board } from "./components/Board";
+import { Arena } from "./components/Board";
 import { Thread } from "./components/Thread";
 import { ProfilePage } from "./components/Profile";
 import { DaoPage } from "./components/Dao";
+import { Logo } from "./components/Logo";
 import { Onboarding, AdminSetup, Toasts } from "./components/Common";
 
-type Tab = "board" | "archive" | "profile" | "dao" | "about";
+type View = "arena" | "archive" | "dashboard" | "dao" | "about";
 
 function Shell() {
   const s = useStore();
   const theme = seasonalTheme();
-  const [tab, setTab] = useState<Tab>("board");
-  const [catId, setCatId] = useState<number>(0);
+  const [view, setView] = useState<View>("arena");
+  const [catId, setCatId] = useState(0);
   const [openPost, setOpenPost] = useState<any>(null);
+  const [composer, setComposer] = useState(false);
+  const [sort, setSort] = useState<"rank" | "new">("rank");
+  const [page, setPage] = useState(1);
   const [night, setNight] = useState<boolean>(() => {
-    try { return localStorage.getItem("bc_night") !== "0"; } catch { return true; }
+    try { return localStorage.getItem("bc_night") === "1"; } catch { return false; }
   });
-  useEffect(() => {
-    document.documentElement.dataset.theme = night ? "night" : "day";
-    try { localStorage.setItem("bc_night", night ? "1" : "0"); } catch {}
-  }, [night]);
   const [blur, setBlur] = useState<boolean>(() => {
     try { return localStorage.getItem("bc_blur") === "1"; } catch { return false; }
   });
 
   useEffect(() => {
-    document.documentElement.style.setProperty("--accent", theme.accent);
-    document.documentElement.style.setProperty("--accent2", theme.accent2);
-  }, [theme.accent, theme.accent2]);
+    document.documentElement.dataset.theme = night ? "night" : "day";
+    try { localStorage.setItem("bc_night", night ? "1" : "0"); } catch {}
+  }, [night]);
   useEffect(() => { try { localStorage.setItem("bc_blur", blur ? "1" : "0"); } catch {} }, [blur]);
+  useEffect(() => {
+    document.documentElement.style.setProperty("--accent", theme.accent);
+  }, [theme.accent]);
 
-  // keep open thread fresh
+  // deep link ?post=ID
+  useEffect(() => {
+    const id = new URLSearchParams(location.search).get("post");
+    if (id && s.posts.length && !openPost) {
+      const p = s.posts.find((x) => x.id.toString() === id);
+      if (p) setOpenPost(p);
+    }
+  }, [s.posts]);
   useEffect(() => {
     if (openPost) {
       const fresh = s.posts.find((p) => p.key.equals(openPost.key));
@@ -43,78 +53,87 @@ function Shell() {
     }
   }, [s.posts]);
 
+  const go = (v: View) => { setView(v); setOpenPost(null); };
   const swap = import.meta.env.VITE_SWAP_URL as string;
   const nft = import.meta.env.VITE_NFT_URL as string;
   const tw = import.meta.env.VITE_TWITTER as string;
   const tg = import.meta.env.VITE_TELEGRAM as string;
+  const inArena = (view === "arena" || view === "archive") && !openPost;
 
   return (
     <div className="app">
-      <header className="top">
-        <div className="brand" onClick={() => { setTab("board"); setOpenPost(null); }}>
-          <span className="logo">{theme.glyph}</span>
-          <div>
-            <h1>BattleChan</h1>
-            <small>{theme.name} · Solana {CLUSTER}</small>
-          </div>
-        </div>
-        <nav className="tabs">
-          {(["board", "archive", "profile", "dao", "about"] as Tab[]).map((t) => (
-            <button key={t} className={tab === t ? "on" : ""} onClick={() => { setTab(t); setOpenPost(null); }}>
-              {t === "board" ? "Arena" : t === "dao" ? "DAO" : t[0].toUpperCase() + t.slice(1)}
-            </button>
-          ))}
-        </nav>
-        <div className="wallet">
+      <div className="topline">
+        <span className="net">{theme.glyph} {theme.name} · Solana {CLUSTER}</span>
+        <span className="links">
+          <label className="chk" title="Blur external media until clicked (placeholder for the planned AI adult-content filter)"><input type="checkbox" checked={blur} onChange={(e) => setBlur(e.target.checked)} /> Blur media</label>
+          <a href={nft} target="_blank" rel="noreferrer">NFT market</a>
+          <a href={tw} target="_blank" rel="noreferrer">X</a>
+          <a href={tg} target="_blank" rel="noreferrer">Telegram</a>
+        </span>
+        <span className="wallet">
           {s.wallet && (
-            <div className="bal" title="Your $TIME balance">
-              <b>{fmtTime(s.balance * 1e6)}</b> $TIME
-              {s.profile && <> · <b>{fmtKarma(s.profile.karma)}</b> $KARMA</>}
-            </div>
+            <span className="bal">
+              <b>{fmtTime(s.balance * 1e6)}</b> $TIME{s.profile && <> · <b>{fmtKarma(s.profile.karma)}</b> $KARMA</>}
+            </span>
           )}
           <WalletMultiButton />
+        </span>
+      </div>
+
+      <header className="frame head">
+        <a className="star" href={swap} target="_blank" rel="noreferrer" title="Buy $TIME"><span>Buy<br />$TIME</span></a>
+        <div className="logoblock" onClick={() => go("arena")}>
+          <Logo size={96} />
+          <div className="title">BattleChan</div>
         </div>
+        <button className="greenbtn createbtn" onClick={() => { go("arena"); setComposer((c) => !c); }}>Create Post</button>
       </header>
 
-      <div className="links">
-        <label className="chk" title="Blurs external images/videos until clicked. Placeholder for the planned AI adult-content filter.">
-          <input type="checkbox" checked={blur} onChange={(e) => setBlur(e.target.checked)} /> Blur media
-        </label>
-        <button className="link" onClick={() => setNight(!night)} title="Toggle day / night mode">{night ? "☀️ Day" : "🌙 Night"}</button>
-        <a className="star" href={swap} target="_blank" rel="noreferrer" title="Buy $TIME">⭐ Buy $TIME</a>
-        <a href={nft} target="_blank" rel="noreferrer">NFT market</a>
-        <a href={tw} target="_blank" rel="noreferrer">X</a>
-        <a href={tg} target="_blank" rel="noreferrer">Telegram</a>
-      </div>
+      <nav className="bar">
+        <span className="barleft">
+          {[1, 2, 3, 4].slice(0, 2).map((n) => (
+            <button key={n} className={"pg" + (page === n && inArena ? " on" : "")} onClick={() => { go(view === "archive" ? "archive" : "arena"); setPage(n); }}>Pg {n}</button>
+          ))}
+          <button className="pg" onClick={() => s.refresh()}>Refresh</button>
+          <button className="pg ico" title="Day mode" onClick={() => setNight(false)}>☀️</button>
+          <button className="pg ico" title="Night mode" onClick={() => setNight(true)}>🌑</button>
+          <button className={"pg" + (view === "archive" ? " on" : "")} onClick={() => go(view === "archive" ? "arena" : "archive")}>Archive</button>
+          <button className={"pg" + (view === "dao" ? " on" : "")} onClick={() => go("dao")}>DAO</button>
+          <button className={"pg" + (view === "about" ? " on" : "")} onClick={() => go("about")}>?</button>
+        </span>
+        <span className="barright">
+          Sort By:{" "}
+          <select value={sort} onChange={(e) => { setSort(e.target.value as any); setPage(1); }}>
+            <option value="rank">Rank</option>
+            <option value="new">New</option>
+          </select>{" "}
+          <button className={"pg" + (view === "dashboard" ? " on" : "")} onClick={() => go("dashboard")}>Dashboard</button>
+        </span>
+      </nav>
 
       <main>
         {!s.initialized ? (
           <AdminSetup />
         ) : s.loading ? (
-          <div className="card center">Loading the arena…</div>
+          <div className="frame center">Loading the arena…</div>
         ) : openPost ? (
           <Thread post={openPost} blur={blur} onBack={() => setOpenPost(null)} />
-        ) : tab === "board" ? (
+        ) : view === "arena" || view === "archive" ? (
           <>
             <Onboarding />
-            <Board mode="live" catId={catId} setCatId={setCatId} onOpen={setOpenPost} blur={blur} />
+            <Arena mode={view === "arena" ? "live" : "archive"} catId={catId} setCatId={setCatId} onOpen={setOpenPost} blur={blur}
+              composer={composer} setComposer={setComposer} sort={sort} page={page} setPage={setPage} />
           </>
-        ) : tab === "archive" ? (
-          <Board mode="archive" catId={catId} setCatId={setCatId} onOpen={setOpenPost} blur={blur} />
-        ) : tab === "profile" ? (
+        ) : view === "dashboard" ? (
           <ProfilePage />
-        ) : tab === "dao" ? (
+        ) : view === "dao" ? (
           <DaoPage />
         ) : (
           <About />
         )}
       </main>
       <footer>
-        Program{" "}
-        <a href={explorerAddr(PROGRAM_ID.toBase58())} target="_blank" rel="noreferrer">
-          {PROGRAM_ID.toBase58().slice(0, 8)}…
-        </a>{" "}
-        · testnet demo · tokens have no real value
+        Program <a href={explorerAddr(PROGRAM_ID.toBase58())} target="_blank" rel="noreferrer">{PROGRAM_ID.toBase58().slice(0, 8)}…</a> · testnet demo · tokens have no real value
       </footer>
       <Toasts />
     </div>
@@ -124,16 +143,15 @@ function Shell() {
 function About() {
   const { cfg } = useStore();
   return (
-    <div className="card prose">
+    <div className="frame prose">
       <h2>How BattleChan works</h2>
-      <p>Every post starts with <b>30 minutes</b> on the clock. Each <b>upvote adds 5 minutes</b>, each <b>downvote removes 5</b>. Only <b>20 posts</b> live in a category — newer posts bump the oldest into the permanent archive. Expired posts stay visible until they get bumped.</p>
-      <p><b>$TIME</b> upvotes fill the post's pot: <b>75%</b> to the owner, <b>25%</b> to commenters with 5+ likes (pro-rata). <b>Downvotes:</b> 50% burned, 50% to the DAO treasury. Voting is unlimited as long as you hold $TIME.</p>
-      <p><b>$KARMA</b>: 1 for every 5 likes on your comment (referrer earns 1 too). It is auto-staked; comment daily to earn staking yield (3% base, up to 10% with milestones). Spend 50 $KARMA on a <b>💣 bomb</b> (-10 min) or a <b>🕊️ resurrection</b> (+10 min, from the archive).</p>
+      <p>Every post starts with <b>5 free minutes</b>. 👍 costs <b>1 $TIME</b> and adds <b>1 minute</b>; 💩 costs <b>1 $TIME</b> and removes <b>1 minute</b>. Liking or disliking <i>comments</i> is free. Page 1 shows the top 25 posts of a category (sorted by Rank or New); the rest flow to page 2, and the oldest live post is bumped into the permanent archive when a new one arrives. Expired posts stay visible until bumped.</p>
+      <p>Click a post's clock for the pop-up: the creator can <b>withdraw</b> up to 75% of the pot to their wallet (each token withdrawn also removes a minute); 25% is shared by commenters with 5+ likes. Downvote $TIME is 50% burned and 50% sent to the DAO treasury.</p>
+      <p><b>$KARMA</b> is a real token: 1 per 5 comment likes, auto-staked (3–10% APY in $TIME if you comment daily). Spend 50 on 💣 (−10 min) or 🕊️ (+10 min, from the archive). Header icons: 👍 like, 💩 dislike, 💸 tip, 🐥 tweet, 🔞 report to admin.</p>
       {cfg && (
         <ul className="params">
-          <li>Vote cost: {fmtTime(cfg.voteCost)} $TIME</li>
-          <li>Initial time: {cfg.initialSecs.toString()}s · per vote: {cfg.voteSecs.toString()}s</li>
-          <li>Owner share: {cfg.opShareBps / 100}% · quorum: {fmtTime(cfg.quorum, 0)} $TIME</li>
+          <li>Vote cost: {fmtTime(cfg.voteCost)} $TIME · per vote: {cfg.voteSecs.toString()}s · initial: {cfg.initialSecs.toString()}s</li>
+          <li>Creator share: {cfg.opShareBps / 100}% · quorum: {fmtTime(cfg.quorum, 0)} $TIME</li>
           <li>Total burned: {fmtTime(cfg.totalBurned)} · to DAO: {fmtTime(cfg.totalToDao)}</li>
         </ul>
       )}

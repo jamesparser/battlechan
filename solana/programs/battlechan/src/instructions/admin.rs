@@ -107,8 +107,8 @@ pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         c.total_burned = 0;
         c.total_to_dao = 0;
 
-        c.initial_secs = 30 * 60; // posts start with 30 minutes
-        c.vote_secs = 5 * 60; // each vote = +/- 5 minutes
+        c.initial_secs = 5 * 60; // each new post starts with 5 free minutes
+        c.vote_secs = 60; // 1 $TIME = 1 minute
         c.vote_cost = TIME_UNIT; // 1 $TIME per vote
         c.op_share_bps = 7_500; // 75% OP / 25% top commenters
         c.comment_threshold = 5; // 5 likes => karma + payout eligibility

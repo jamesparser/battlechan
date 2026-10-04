@@ -138,6 +138,8 @@ pub struct Post {
     pub qualified_likes: u64,
     pub burned_from_down: u64,
     pub dao_from_down: u64,
+    /// Number of wallets that reported this post to the admin for review.
+    pub reports: u32,
     pub archived: bool,
     #[max_len(4, 40)]
     pub poll_options: Vec<String>,
@@ -175,6 +177,12 @@ pub struct Comment {
 #[derive(InitSpace)]
 pub struct CommentVote {
     pub up: bool,
+}
+
+#[account]
+#[derive(InitSpace)]
+pub struct Report {
+    pub at: i64,
 }
 
 #[account]

@@ -1,7 +1,8 @@
 //! Protocol-level constants. Tunable values live in `Config` and are DAO-governed.
 
-/// Max number of live posts per category (the "battle" arena).
-pub const CATEGORY_CAP: usize = 20;
+/// Max number of live posts per category (the "battle" arena): page 1 shows 25, page 2 holds 100.
+/// Newer posts bump the oldest live post into the permanent archive.
+pub const CATEGORY_CAP: usize = 125;
 /// $TIME has 6 decimals.
 pub const TIME_DECIMALS: u8 = 6;
 pub const TIME_UNIT: u64 = 1_000_000;

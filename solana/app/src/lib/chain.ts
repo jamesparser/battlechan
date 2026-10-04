@@ -8,7 +8,9 @@ export const PROGRAM_ID = new PublicKey((idl as any).address);
 export const TIME_DECIMALS = 6;
 export const TIME_UNIT = 10 ** TIME_DECIMALS;
 export const KARMA_UNIT = 10 ** 6;
-export const CATEGORY_CAP = 20;
+export const CATEGORY_CAP = 125;
+export const PAGE1_SIZE = 25;
+export const PAGE_SIZE = 25;
 
 const u16 = (n: number) => new BN(n).toArrayLike(Buffer, "le", 2);
 const u32 = (n: number) => new BN(n).toArrayLike(Buffer, "le", 4);
@@ -31,6 +33,7 @@ export const pda = {
   comment: (post: PublicKey, idx: number) => find([s("comment"), post.toBuffer(), u32(idx)]),
   cvote: (comment: PublicKey, voter: PublicKey) => find([s("cvote"), comment.toBuffer(), voter.toBuffer()]),
   pvote: (post: PublicKey, voter: PublicKey) => find([s("pvote"), post.toBuffer(), voter.toBuffer()]),
+  report: (post: PublicKey, w: PublicKey) => find([s("report"), post.toBuffer(), w.toBuffer()]),
   proposal: (id: number | BN) => find([s("proposal"), u64(id)]),
   dvote: (proposal: PublicKey, voter: PublicKey) => find([s("dvote"), proposal.toBuffer(), voter.toBuffer()]),
 };

@@ -1,6 +1,6 @@
 # BattleChan on Solana
 
-Posts battle for time. Every post starts with 30 minutes on the clock, upvotes add 5 minutes, downvotes remove 5.
+Posts battle for time. Every post starts with 5 free minutes on the clock. Upvoting a post (👍) costs 1 $TIME and adds 1 minute; downvoting (💩) costs 1 $TIME and removes 1 minute. Comment likes are free.
 Only 20 posts live per category; newer posts bump the oldest into a permanent archive. Port of the Internet Computer
 version, built from the *BattleChan Benchmarks 2025* and *Whitepaper* docs.
 
@@ -8,7 +8,7 @@ version, built from the *BattleChan Benchmarks 2025* and *Whitepaper* docs.
 
 | Feature (from the docs) | Where |
 |---|---|
-| 30-min start, ±5 min per vote, unlimited votes while you hold $TIME | `upvote_post`, `downvote_post` |
+| 5-min start, ±1 min per $TIME vote; 125 live posts per category (oldest bumped to archive); page 1 = 25 posts, page 2 = 100; 🔞 `report_post` | `upvote_post`, `downvote_post`, `report_post` |
 | 20 live posts per category, bump-to-archive; expired posts stay visible until bumped | `Category.slots` ring buffer, `create_post` |
 | Permanent archive + profile history, up/down counts kept | `Post` accounts are never closed |
 | Upvote $TIME → pot: 75% owner / 25% commenters with 5+ likes (pro-rata) | `op_withdraw`, `claim_comment_reward` |

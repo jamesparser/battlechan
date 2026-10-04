@@ -85,13 +85,13 @@ describe("battlechan", () => {
   it("post starts at +30 minutes; upvote adds 5 min and fills the pot; downvote burns 50%", async () => {
     post = await newPost(alice, 0, "first");
     let p: any = await program.account.post.fetch(post);
-    assert.equal(p.expiresAt.sub(p.createdAt).toNumber(), 30 * 60);
+    assert.equal(p.expiresAt.sub(p.createdAt).toNumber(), 5 * 60);
 
     await program.methods.upvotePost(3).accountsPartial({
       voter: bob.publicKey, config, post, authorProfile: profileOf(alice.publicKey), voterAta: ataOf(bob.publicKey), vault,
     }).signers([bob]).rpc();
     p = await program.account.post.fetch(post);
-    assert.equal(p.expiresAt.sub(p.createdAt).toNumber(), 30 * 60 + 3 * 300);
+    assert.equal(p.expiresAt.sub(p.createdAt).toNumber(), 5 * 60 + 3 * 60);
     assert.equal(p.pot.toNumber(), 3 * TIME);
 
     const supplyBefore = Number((await provider.connection.getTokenSupply(mint)).value.amount);
@@ -104,7 +104,7 @@ describe("battlechan", () => {
     assert.equal(supplyBefore - supplyAfter, 1 * TIME, "1 of 2 $TIME burned");
     assert.equal(treasAfter - treasBefore, 1 * TIME, "1 of 2 $TIME to DAO");
     p = await program.account.post.fetch(post);
-    assert.equal(p.expiresAt.sub(p.createdAt).toNumber(), 30 * 60 + 3 * 300 - 2 * 300);
+    assert.equal(p.expiresAt.sub(p.createdAt).toNumber(), 5 * 60 + 3 * 60 - 2 * 60);
   });
 
   it("5 comment likes mint $KARMA and make the commenter reward-eligible", async () => {
@@ -148,9 +148,9 @@ describe("battlechan", () => {
     assert.isTrue(early);
   });
 
-  it("20-slot ring: the 21st post bumps the oldest into the archive; karma can't resurrect without 50", async () => {
+  it("125-slot ring: the 126th post bumps the oldest into the archive; karma can't resurrect without 50", async () => {
     const first = post;
-    for (let i = 0; i < 20; i++) await newPost(alice, 0, `p${i}`);
+    for (let i = 0; i < 125; i++) await newPost(alice, 0, `p${i}`);
     const p: any = await program.account.post.fetch(first);
     assert.isTrue(p.archived);
     let cantRes = false;

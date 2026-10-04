@@ -138,6 +138,30 @@ export class Actions {
       .rpc();
   }
 
+  async report(post: any) {
+    const postKey = pda.post(post.id);
+    return this.program.methods
+      .reportPost()
+      .accountsPartial({
+        reporter: this.wallet,
+        reporterProfile: pda.profile(this.wallet),
+        post: postKey,
+        report: pda.report(postKey, this.wallet),
+      })
+      .rpc();
+  }
+
+  /** 💸 tip: plain SPL transfer of $TIME straight to the post owner. */
+  async tip(post: { owner: PublicKey }, amountBase: BN) {
+    const { createTransferInstruction, createAssociatedTokenAccountIdempotentInstruction } = await import("@solana/spl-token");
+    const { Transaction } = await import("@solana/web3.js");
+    const to = this.ata(post.owner);
+    const tx = new Transaction()
+      .add(createAssociatedTokenAccountIdempotentInstruction(this.wallet, to, post.owner, pda.mint()))
+      .add(createTransferInstruction(this.ata(), to, this.wallet, BigInt(amountBase.toString())));
+    return (this.program.provider as any).sendAndConfirm(tx);
+  }
+
   async pollVote(post: any, option: number) {
     const postKey = pda.post(post.id);
     return this.program.methods

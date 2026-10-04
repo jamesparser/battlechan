@@ -2,13 +2,13 @@ import { useState } from "react";
 import { isVideo } from "../lib/format";
 import { useStore } from "../store";
 
-export function Media({ url, blur }: { url: string; blur: boolean }) {
+export function Media({ url, blur, bare }: { url: string; blur: boolean; bare?: boolean }) {
   const [revealed, setRevealed] = useState(false);
   if (!url) return null;
   if (!/^https?:\/\//i.test(url)) return <div className="muted">media link: {url}</div>;
   const hide = blur && !revealed;
   const el = isVideo(url) ? (
-    <video src={url} controls loop muted playsInline className="media" />
+    <video src={url} controls={!bare} loop muted playsInline autoPlay={bare} className="media" />
   ) : (
     <img src={url} className="media" loading="lazy" alt="" referrerPolicy="no-referrer" />
   );
@@ -44,7 +44,7 @@ export function Onboarding() {
   const [ref, setRef] = useState(() => new URLSearchParams(location.search).get("ref") || "");
   if (!wallet) {
     return (
-      <div className="card hero">
+      <div className="frame hero">
         <h2>Posts battle for time. ⚔️</h2>
         <p>Connect a wallet (set it to <b>Solana testnet</b>), grab free test $TIME from the faucet, and start fighting for the front page.</p>
       </div>
@@ -52,7 +52,7 @@ export function Onboarding() {
   }
   if (!profile) {
     return (
-      <div className="card hero">
+      <div className="frame hero">
         <h2>Create your battle profile</h2>
         <p>One transaction. No email, no phone — just your wallet.</p>
         <div className="row">
@@ -66,7 +66,7 @@ export function Onboarding() {
   }
   if (balance < 1) {
     return (
-      <div className="card hero">
+      <div className="frame hero">
         <h2>You need $TIME to vote</h2>
         <p>Claim the free testnet airdrop (once a day). You also need a little testnet SOL for fees.</p>
         <div className="row">
@@ -84,7 +84,7 @@ export function Onboarding() {
 /** First-run: program deployed but `initialize` not called yet. */
 export function AdminSetup() {
   return (
-    <div className="card prose">
+    <div className="frame prose">
       <h2>Arena not initialized</h2>
       <p>The program is deployed but has not been initialized on this cluster yet. Run:</p>
       <pre>npm run init:testnet</pre>

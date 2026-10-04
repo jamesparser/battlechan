@@ -8,8 +8,8 @@ import { explorerAddr, pda } from "../lib/chain";
 export function ProfilePage() {
   const { profile, balance, karmaWallet, wallet, posts, run, busy, now, cfg } = useStore();
   const [amt, setAmt] = useState("");
-  if (!wallet) return <div className="card center">Connect a wallet to see your profile.</div>;
-  if (!profile) return <div className="card center">No profile yet — head to the Arena and join.</div>;
+  if (!wallet) return <div className="frame center">Connect a wallet to see your profile.</div>;
+  if (!profile) return <div className="frame center">No profile yet — head to the Arena and join.</div>;
 
   const badges = computeBadges(profile, balance);
   const myPosts = posts.filter((p) => p.author.equals(wallet)).sort((a, b) => b.id.toNumber() - a.id.toNumber());
@@ -22,7 +22,7 @@ export function ProfilePage() {
 
   return (
     <section className="profile">
-      <div className="card">
+      <div className="frame">
         <h2>{shortKey(wallet)} {profile.decoration > 0 && <span className={"deco d" + profile.decoration}>{DECORATIONS[profile.decoration]}</span>}</h2>
         <div className="statgrid">
           <div><b>{fmtTime(balance * 1e6)}</b><span>$TIME balance</span></div>
@@ -43,7 +43,7 @@ export function ProfilePage() {
         </div>
       </div>
 
-      <div className="card">
+      <div className="frame">
         <h3>$KARMA staking</h3>
         <p className="muted">
           $KARMA is a real SPL token (mint <a href={explorerAddr(pda.karmaMint().toBase58())} target="_blank" rel="noreferrer">{shortKey(pda.karmaMint())}</a>).
@@ -56,14 +56,14 @@ export function ProfilePage() {
         </div>
       </div>
 
-      <div className="card">
+      <div className="frame">
         <h3>Badges</h3>
         <div className="badges">
           {badges.map((b) => <span key={b.id} className={"badge " + b.group} title={b.group}>{b.emoji} {b.label}</span>)}
         </div>
       </div>
 
-      <div className="card">
+      <div className="frame">
         <h3>Decorations</h3>
         <p className="muted">Cosmetic profile flair, paid in $TIME to the DAO (id × 10).</p>
         <div className="row wrap">
@@ -73,13 +73,13 @@ export function ProfilePage() {
         </div>
       </div>
 
-      <div className="card">
+      <div className="frame">
         <h3>Referrals</h3>
         <p className="muted">Whenever someone you referred earns $KARMA, you earn 1 too.</p>
         <input readOnly value={link} onFocus={(e) => e.currentTarget.select()} />
       </div>
 
-      <div className="card">
+      <div className="frame">
         <h3>My posts (permanent)</h3>
         {myPosts.map((p) => (
           <div key={p.key.toBase58()} className="line">

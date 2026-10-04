@@ -40,7 +40,7 @@ export function DaoPage() {
 
   return (
     <section>
-      <div className="card">
+      <div className="frame">
         <h2>BattleChan DAO</h2>
         <p className="muted">
           Token holders govern every platform parameter and the treasury. Vote weight = your $TIME balance when you vote.
@@ -55,7 +55,7 @@ export function DaoPage() {
       </div>
 
       {wallet && (
-        <form className="card" onSubmit={async (e) => {
+        <form className="frame" onSubmit={async (e) => {
           e.preventDefault();
           const rec = kind === 1 ? new PublicKey(recipient) : PublicKey.default;
           if (await run("Create proposal", (a) => a.createProposal(title, desc, kind, param, new BN(value || "0"), rec))) {
@@ -88,10 +88,10 @@ export function DaoPage() {
         const pct = total ? Math.round((toNum(p.yes) / total) * 100) : 0;
         const passes = toNum(p.yes) > toNum(p.no) && total >= toNum(cfg.quorum);
         return (
-          <div key={p.id.toString()} className="card proposal">
+          <div key={p.id.toString()} className="frame">
             <div className="row between">
               <h3>#{p.id.toString()} {p.title}</h3>
-              <span className="chip">{p.executed ? "executed" : ended ? (passes ? "passed" : "failed") : `ends in ${fmtDur(p.endTs.toNumber() - now)}`}</span>
+              <span className="chip2">{p.executed ? "executed" : ended ? (passes ? "passed" : "failed") : `ends in ${fmtDur(p.endTs.toNumber() - now)}`}</span>
             </div>
             <p className="muted">{p.description}</p>
             <p>
@@ -100,7 +100,7 @@ export function DaoPage() {
                 : <>Send <b>{fmtTime(p.value)}</b> $TIME to {shortKey(p.recipient)}</>}
               {" "}· by {shortKey(p.proposer)}
             </p>
-            <div className="bar"><i style={{ width: pct + "%" }} /></div>
+            <div className="bar-yes"><i style={{ width: pct + "%" }} /></div>
             <div className="row wrap">
               <span>Yes {fmtTime(p.yes, 0)} · No {fmtTime(p.no, 0)}</span>
               {!ended && wallet && (
@@ -116,7 +116,7 @@ export function DaoPage() {
           </div>
         );
       })}
-      {props.length === 0 && <div className="card center">No proposals yet.</div>}
+      {props.length === 0 && <div className="frame center">No proposals yet.</div>}
     </section>
   );
 }

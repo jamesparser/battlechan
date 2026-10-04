@@ -2249,6 +2249,103 @@
       ]
     },
     {
+      "name": "report_post",
+      "discriminator": [
+        88,
+        179,
+        206,
+        205,
+        89,
+        16,
+        103,
+        208
+      ],
+      "accounts": [
+        {
+          "name": "reporter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "reporter_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "reporter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "post",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "post.id",
+                "account": "Post"
+              }
+            ]
+          }
+        },
+        {
+          "name": "report",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  111,
+                  114,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "post"
+              },
+              {
+                "kind": "account",
+                "path": "reporter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
       "name": "stake_karma",
       "discriminator": [
         64,
@@ -3076,6 +3173,19 @@
       ]
     },
     {
+      "name": "Report",
+      "discriminator": [
+        232,
+        246,
+        229,
+        227,
+        242,
+        105,
+        190,
+        2
+      ]
+    },
+    {
       "name": "UserProfile",
       "discriminator": [
         32,
@@ -3258,7 +3368,7 @@
             "type": {
               "array": [
                 "pubkey",
-                20
+                125
               ]
             }
           },
@@ -3610,6 +3720,13 @@
             "type": "u64"
           },
           {
+            "name": "reports",
+            "docs": [
+              "Number of wallets that reported this post to the admin for review."
+            ],
+            "type": "u32"
+          },
+          {
             "name": "archived",
             "type": "bool"
           },
@@ -3694,6 +3811,18 @@
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Report",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "at",
+            "type": "i64"
           }
         ]
       }

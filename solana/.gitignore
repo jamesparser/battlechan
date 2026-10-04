@@ -6,7 +6,3 @@ app/dist
 app/.env
 .anchor
 test-ledger
-
-target/deploy/*.json
-target/.rustc_info.json
-!target/deploy/.gitkeep
