@@ -1,0 +1,12 @@
+node_modules
+target/debug
+target/release
+target/deploy/*.so
+app/dist
+app/.env
+.anchor
+test-ledger
+
+target/deploy/*.json
+target/.rustc_info.json
+!target/deploy/.gitkeep

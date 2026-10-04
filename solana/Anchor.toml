@@ -1,0 +1,25 @@
+[toolchain]
+anchor_version = "0.31.1"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+battlechan = "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD"
+
+[programs.devnet]
+battlechan = "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD"
+
+[programs.testnet]
+battlechan = "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "testnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
