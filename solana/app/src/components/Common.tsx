@@ -5,7 +5,7 @@ import { useStore } from "../store";
 export function Media({ url, blur, bare }: { url: string; blur: boolean; bare?: boolean }) {
   const [revealed, setRevealed] = useState(false);
   if (!url) return null;
-  if (!/^https?:\/\//i.test(url)) return <div className="muted">media link: {url}</div>;
+  if (!/^(https?:\/\/|data:image\/)/i.test(url)) return <div className="muted">media link: {url}</div>;
   const hide = blur && !revealed;
   const el = isVideo(url) ? (
     <video src={url} controls={!bare} loop muted playsInline autoPlay={bare} className="media" />

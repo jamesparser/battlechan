@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { BN } from "@coral-xyz/anchor";
 import { useStore } from "../store";
+import { demo, demoComments } from "../lib/demo";
 import { FLAIRS } from "../lib/badges";
 import { shortKey, toNum } from "../lib/format";
 import { toBase } from "../lib/actions";
@@ -32,6 +33,7 @@ export function Thread({ post, blur, onBack }: { post: any; blur: boolean; onBac
   const [popup, setPopup] = useState(false);
 
   const load = async () => {
+    if (demo.on) { setComments(demoComments(post)); return; }
     if (!actions) return;
     const all = await actions.program.account.comment.all([{ memcmp: { offset: 8, bytes: post.key.toBase58() } }]);
     setComments(all.map((x: any) => ({ key: x.publicKey, ...x.account })).sort((a: any, b: any) => a.index - b.index));

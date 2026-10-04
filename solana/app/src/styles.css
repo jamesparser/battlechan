@@ -25,7 +25,8 @@ a { color: var(--link); }
 .muted { color: var(--muted); font-size: 13px; }
 .head { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 12px 12px; }
 .logoblock { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-.logo-svg { border: 3px solid var(--line); background: #000; display: block; }
+.logo-img { display: block; height: auto; width: min(230px, 60vw); image-rendering: auto; }
+:root[data-theme="night"] .logo-img { filter: invert(1) hue-rotate(180deg) brightness(1.1); }
 .title { font-size: 20px; font-weight: 600; margin-top: 2px; }
 .createbtn { margin-top: 2px; }
 .star { position: absolute; right: 16px; top: 8px; width: 88px; height: 84px; display: grid; place-items: center; text-align: center; font-weight: 700; font-size: 14px; line-height: 1.05; text-decoration: none; color: #111;

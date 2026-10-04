@@ -9,6 +9,7 @@ import { Thread } from "./components/Thread";
 import { ProfilePage } from "./components/Profile";
 import { DaoPage } from "./components/Dao";
 import { Logo } from "./components/Logo";
+import { demo } from "./lib/demo";
 import { Onboarding, AdminSetup, Toasts } from "./components/Common";
 
 type View = "arena" | "archive" | "dashboard" | "dao" | "about";
@@ -83,8 +84,7 @@ function Shell() {
       <header className="frame head">
         <a className="star" href={swap} target="_blank" rel="noreferrer" title="Buy $TIME"><span>Buy<br />$TIME</span></a>
         <div className="logoblock" onClick={() => go("arena")}>
-          <Logo size={96} />
-          <div className="title">BattleChan</div>
+          <Logo size={84} />
         </div>
         <button className="greenbtn createbtn" onClick={() => { go("arena"); setComposer((c) => !c); }}>Create Post</button>
       </header>
@@ -133,7 +133,7 @@ function Shell() {
         )}
       </main>
       <footer>
-        Program <a href={explorerAddr(PROGRAM_ID.toBase58())} target="_blank" rel="noreferrer">{PROGRAM_ID.toBase58().slice(0, 8)}…</a> · testnet demo · tokens have no real value
+        Program <a href={explorerAddr(PROGRAM_ID.toBase58())} target="_blank" rel="noreferrer">{PROGRAM_ID.toBase58().slice(0, 8)}…</a> · testnet demo · tokens have no real value{demo.on && " · SAMPLE DATA (program not live yet)"}
       </footer>
       <Toasts />
     </div>

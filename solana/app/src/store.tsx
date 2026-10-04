@@ -4,6 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 import { getAccount } from "@solana/spl-token";
 import { connection, explorer, getProgram, pda, readonlyProgram } from "./lib/chain";
 import { Actions } from "./lib/actions";
+import { demo, demoCats, demoCfg, demoPosts } from "./lib/demo";
 
 export interface Toast {
   id: number;
@@ -84,12 +85,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const dismiss = (id: number) => setToasts((x) => x.filter((y) => y.id !== id));
 
   const refresh = useCallback(async () => {
+    if (demo.on) { setInitialized(true); setCfg(demoCfg); setCats(demoCats); setPosts(demoPosts); setLoading(false); return; }
     const prog = actions?.program ?? readonlyProgram();
     try {
       const c = await prog.account.config.fetchNullable(pda.config());
       if (!c) {
-        setInitialized(false);
-        setLoading(false);
+        // program not deployed on this cluster yet: show sample data so the UI is reviewable
+        demo.on = true;
+        setInitialized(true); setCfg(demoCfg); setCats(demoCats); setPosts(demoPosts); setLoading(false);
         return;
       }
       setInitialized(true);
