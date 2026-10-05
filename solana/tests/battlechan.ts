@@ -1,5 +1,6 @@
-import * as anchor from "@coral-xyz/anchor";
-import { BN, Program } from "@coral-xyz/anchor";
+import * as anchorNS from "@coral-xyz/anchor";
+const anchor = anchorNS.default ?? anchorNS;
+const { BN, Program } = anchor;
 import { Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from "@solana/web3.js";
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
 import { assert } from "chai";

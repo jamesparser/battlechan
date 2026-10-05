@@ -186,7 +186,7 @@ pub fn create_category(ctx: Context<CreateCategory>, name: String) -> Result<()>
     let c = &mut ctx.accounts.category;
     c.id = ctx.accounts.config.category_count;
     c.name = name;
-    c.slots = [Pubkey::default(); CATEGORY_CAP];
+    c.slots = vec![Pubkey::default(); CATEGORY_CAP];
     c.next = 0;
     c.post_count = 0;
     c.bump = ctx.bumps.category;

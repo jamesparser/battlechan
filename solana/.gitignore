@@ -2,6 +2,10 @@ node_modules
 target/debug
 target/release
 target/deploy/*.so
+target/deploy/*.json
+target/.rustc_info.json
+target/sbpfv3-solana-solana
+target/types
 app/dist
 app/.env
 .anchor

@@ -1,5 +1,5 @@
 {
-  "address": "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD",
+  "address": "FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk",
   "metadata": {
     "name": "battlechan",
     "version": "0.1.0",
@@ -3363,13 +3363,12 @@
           {
             "name": "slots",
             "docs": [
-              "Ring buffer of the 20 live posts. Pubkey::default() = empty slot."
+              "Ring buffer of live posts (max CATEGORY_CAP). Pubkey::default() = empty slot.",
+              "Vec (heap-backed) rather than a fixed array: a [Pubkey; 125] on the stack blows the",
+              "4096-byte SBF frame in Account::deserialize."
             ],
             "type": {
-              "array": [
-                "pubkey",
-                125
-              ]
+              "vec": "pubkey"
             }
           },
           {

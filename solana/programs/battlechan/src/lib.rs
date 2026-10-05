@@ -14,7 +14,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD");
+declare_id!("FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk");
 
 #[program]
 pub mod battlechan {

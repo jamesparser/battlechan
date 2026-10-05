@@ -6,19 +6,19 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-battlechan = "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD"
+battlechan = "FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk"
 
 [programs.devnet]
-battlechan = "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD"
+battlechan = "FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk"
 
 [programs.testnet]
-battlechan = "J4FZnCJRHErXyzK677xbiEURnQ5rf5Js7w47eJaMu2CD"
+battlechan = "FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "testnet"
+cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

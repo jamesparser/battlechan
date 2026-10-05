@@ -54,8 +54,11 @@ pub struct Category {
     pub id: u16,
     #[max_len(24)]
     pub name: String,
-    /// Ring buffer of the 20 live posts. Pubkey::default() = empty slot.
-    pub slots: [Pubkey; CATEGORY_CAP],
+    /// Ring buffer of live posts (max CATEGORY_CAP). Pubkey::default() = empty slot.
+    /// Vec (heap-backed) rather than a fixed array: a [Pubkey; 125] on the stack blows the
+    /// 4096-byte SBF frame in Account::deserialize.
+    #[max_len(CATEGORY_CAP)]
+    pub slots: Vec<Pubkey>,
     pub next: u8,
     pub post_count: u64,
     pub bump: u8,
