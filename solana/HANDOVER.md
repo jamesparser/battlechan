@@ -32,14 +32,21 @@ A time-boxed, token-curated imageboard. Posts "battle for time": every post star
 - Defaults set in `initialize`: initial_secs=300, vote_secs=60, vote_cost=1 $TIME, op_share_bps=7500, bomb/resurrect=50 KARMA, faucet 100 $TIME/day.
 
 ## 4. What is VERIFIED vs NOT
-Verified (in Claude's cloud sandbox):
-- Rust program passes `cargo check`; `anchor idl build` works (cargo shim + `RUSTC_BOOTSTRAP=1`); IDL at `target/idl/battlechan.json` and `app/src/idl/battlechan.json`.
-- Frontend `npm run build` succeeds; rendered and screenshotted in desktop, mobile, night, thread view.
+Verified (2026-10-05, BrowserOS agent on the owner's Mac):
+- ✅ `anchor build` (SBF) succeeds — fixed the `Category` stack overflow by switching `slots` from
+  `[Pubkey; 125]` to a heap-backed `Vec<Pubkey>` (`#[max_len(CATEGORY_CAP)]`); deploys as 761 KB `.so`.
+- ✅ `anchor test`: **6/6 passing** on a local validator (mint/revoke-supply, faucet cooldown, vote time,
+  downvote 50% burn, karma/commenter payout, owner withdraw limits, 125-slot ring archive + resurrect).
+- ✅ Frontend `npm run build` (tsc + vite) succeeds against the fresh IDL + new program id.
+- ✅ Program id updated everywhere to `FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk`
+  (new keypair in `target/deploy/battlechan-keypair.json` — never commit that file; `.gitignore` now excludes it).
+- ⚠️ Committed as `55b2303` on `solana-port` (local). PUSH to origin when possible.
 
-NOT verified (Claude had no Solana/Anchor toolchain or validator):
-- `anchor build` (SBF) — possible stack-size issue with the big `Category` account (`[Pubkey;125]`); consider `Box<Account<..>>` or zero_copy.
-- `anchor test` — `tests/battlechan.ts` was written for the current rules but has never run.
-- Any real transaction, and the frontend against a live deployed program.
+NOT yet done:
+- Live devnet deploy + `init.ts` — BLOCKED only on funding the CLI wallet `~/.config/solana/id.json`
+  (`ENZWmHK8YhYzhuA6B6ofdqnJ14qCYiBLEMxfqK1ZT9FC` → 0 devnet SOL; web faucet is 2-per-8h and CLI
+  airdrop is IP-rate-limited). Script: `bash scripts/deploy-devnet.sh` then re-run app build + Vercel deploy.
+- Frontend pointed at the deployed program / Vercel redeploy.
 Known gaps: DAO vote weight uses balance at vote time (no snapshot); NFT mint stubbed; a few Miro comments (Dashboard, Post Reply screens) were never read.
 
 ## 5. Frontend notes (`app/`)
