@@ -42,12 +42,23 @@ Verified (2026-10-05, BrowserOS agent on the owner's Mac):
   (new keypair in `target/deploy/battlechan-keypair.json` — never commit that file; `.gitignore` now excludes it).
 - ⚠️ Committed as `55b2303` on `solana-port` (local). PUSH to origin when possible.
 
-NOT yet done:
-- Live devnet deploy + `init.ts` — BLOCKED only on funding the CLI wallet `~/.config/solana/id.json`
-  (`ENZWmHK8YhYzhuA6B6ofdqnJ14qCYiBLEMxfqK1ZT9FC` → 0 devnet SOL; web faucet is 2-per-8h and CLI
-  airdrop is IP-rate-limited). Script: `bash scripts/deploy-devnet.sh` then re-run app build + Vercel deploy.
-- Frontend pointed at the deployed program / Vercel redeploy.
-Known gaps: DAO vote weight uses balance at vote time (no snapshot); NFT mint stubbed; a few Miro comments (Dashboard, Post Reply screens) were never read.
+- ✅ **Live on Solana devnet** (2026-10-05): program `FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk`
+  deployed (sig `35QaK6qr…`). `init.ts` created config (580B), 7 categories, admin profile, mints:
+  - $TIME `6Y8Z92BoLsaEUkYFCoxC391ZKETbmwoYWw1D9iWscLwi` (100B supply, 6 dec, mint authority revoked)
+  - $KARMA `FQczvmprTFaAuocypJe5ePNEocoARUkdT8Ed9rQNY3Gm` (1T cap, program-minted)
+- ✅ Frontend rebuilt with fresh IDL, `VITE_CLUSTER=devnet`, redeployed to
+  **https://battlechan.vercel.app** (Vercel auth off — judges can open it). Bundle contains real
+  program id + devnet RPC (not sample data).
+- Deploy wallet `ENZWmHK8YhYzhuA6B6ofdqnJ14qCYiBLEMxfqK1ZT9FC` has ~1.13 devnet SOL left
+  (3.9 used for deploy+init). Keypair backup was emailed.
+
+NOT yet done (Colosseum submission pack):
+- Pitch video ≤2 min + demo video ≤3 min (YouTube/Loom/Vimeo) for the Arena portal.
+- Repo still **private** — make public or grant judge access (required).
+- Optional: DAO vote snapshot; AI features; Metaplex NFT mint.
+
+Known gaps: DAO vote weight is balance-at-vote-time (no snapshot); NFT mint stubbed (`trade_post` only);
+feed uses `getProgramAccounts` (fine for demo).
 
 ## 5. Frontend notes (`app/`)
 - Stack: Vite, React 18, TS, `@coral-xyz/anchor`, wallet-adapter (Phantom/Solflare), `@solana/spl-token`. Polls chain every 10 s via `src/store.tsx`; `src/lib/actions.ts` wraps program calls.

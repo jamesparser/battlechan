@@ -3,7 +3,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useStore } from "../store";
 import { PAGE_SIZE } from "../lib/chain";
 import { fmtTime, toNum } from "../lib/format";
-import { Media } from "./Common";
+import { Media, ImagePicker } from "./Common";
 import { Pots } from "./Pots";
 import { TimePopup } from "./TimePopup";
 
@@ -68,7 +68,7 @@ export function NewPost({ catId, onDone }: { catId: number; onDone: () => void }
       <div className="frow"><label>Name</label><input value="Anonymous" readOnly /><button className="greenbtn" disabled={busy || !title.trim()}>Post</button></div>
       <div className="frow"><label>Subject</label><input maxLength={80} value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
       <div className="frow top"><label>Body</label><textarea rows={4} maxLength={1000} value={body} onChange={(e) => setBody(e.target.value)} /></div>
-      <div className="frow"><label className="g">Image</label><input maxLength={200} placeholder="image / GIF / WebM link" value={media} onChange={(e) => setMedia(e.target.value)} />
+      <div className="frow"><label className="g">Image</label><ImagePicker value={media} onChange={setMedia} disabled={busy} />
         <button type="button" className="yellowbtn" disabled title="Minting a post as an NFT is on the roadmap. For now posts can be traded owner-to-owner from the time pop-up.">Mint NFT</button></div>
       {poll.length > 0 && (
         <div className="frow top"><label>Poll</label><div className="pollbox">

@@ -5,7 +5,7 @@ import { demo, demoComments } from "../lib/demo";
 import { FLAIRS } from "../lib/badges";
 import { shortKey, toNum } from "../lib/format";
 import { toBase } from "../lib/actions";
-import { Media } from "./Common";
+import { ImagePicker, Media } from "./Common";
 import { clock, pad4 } from "./Board";
 import { TimePopup } from "./TimePopup";
 
@@ -57,18 +57,22 @@ export function Thread({ post, blur, onBack }: { post: any; blur: boolean; onBac
     <section className="thread">
       <button className="link back" onClick={onBack}>← back to arena</button>
 
-      {wallet && profile && !post.archived && (
-        <form className="frame form" onSubmit={async (e) => {
-          e.preventDefault();
+      {wallet && profile && !post.archived && (() => {
+        const submit = async (e?: { preventDefault: () => void }) => {
+          e?.preventDefault();
+          console.log("[Battlechan] Post reply clicked", { body: body.trim().slice(0, 40), media: media.trim() });
           if (await run("Post reply", (a) => a.createComment(post, body.trim(), media.trim()))) { setBody(""); setMedia(""); load(); refresh(); }
-        }}>
+        };
+        return (
+        <form className="frame form" onSubmit={submit}>
           <div className="frow"><label>Name</label><input value="Anonymous" readOnly /></div>
           <div className="frow top"><label>Body</label><textarea rows={3} maxLength={500} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Reply… (start a line with > to quote, e.g. >#0000000000001)" /></div>
-          <div className="frow"><label className="g">Image</label><input maxLength={200} placeholder="image / GIF / WebM link" value={media} onChange={(e) => setMedia(e.target.value)} /></div>
-          <div className="frow"><button className="greenbtn wide" disabled={busy || (!body.trim() && !media.trim())}>Post Reply</button>
+          <div className="frow"><label className="g">Image</label><ImagePicker value={media} onChange={setMedia} disabled={busy} /></div>
+          <div className="frow"><button type="submit" className="greenbtn wide" disabled={busy || (!body.trim() && !media.trim())} onClick={submit}>Post Reply</button>
             <button type="button" className="yellowbtn wide" disabled title="NFT minting is on the roadmap">Mint NFT</button></div>
         </form>
-      )}
+        );
+      })()}
 
       <div className="frame op">
         <div className="oppic">

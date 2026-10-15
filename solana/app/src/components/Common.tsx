@@ -20,6 +20,70 @@ export function Media({ url, blur, bare }: { url: string; blur: boolean; bare?: 
   );
 }
 
+
+/** Local file → public URL (max 200 chars on-chain). */
+export async function uploadImage(file: File): Promise<string> {
+  if (file.size > 8 * 1024 * 1024) throw new Error("Image must be under 8 MB");
+  const fd = new FormData();
+  fd.append("reqtype", "fileupload");
+  fd.append("time", "72h");
+  fd.append("fileToUpload", file);
+  const res = await fetch("https://litterbox.catbox.moe/resources/internals/api.php", {
+    method: "POST",
+    body: fd,
+  });
+  if (!res.ok) throw new Error(`Upload failed (${res.status})`);
+  const url = (await res.text()).trim();
+  if (!/^https?:\/\//.test(url)) throw new Error("Host did not return a URL");
+  return url;
+}
+
+export function ImagePicker({ value, onChange, disabled }: {
+  value: string;
+  onChange: (v: string) => void;
+  disabled?: boolean;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  return (
+    <div className="imagepicker">
+      <input
+        type="file"
+        accept="image/*,image/gif,image/webp,video/webm"
+        style={{ display: "none" }}
+        id="local-image-input"
+        disabled={disabled || busy}
+        onChange={async (e) => {
+          const f = e.target.files?.[0];
+          if (!f) return;
+          setErr("");
+          setBusy(true);
+          try {
+            const url = await uploadImage(f);
+            onChange(url);
+          } catch (ex: any) {
+            setErr(ex?.message || "Upload failed — paste a link instead");
+          } finally {
+            setBusy(false);
+            e.target.value = "";
+          }
+        }}
+      />
+      <label htmlFor="local-image-input" className={"yellowbtn filebtn" + (disabled || busy ? " disabled" : "")}>
+        {busy ? "Uploading…" : "Upload"}
+      </label>
+      <input
+        maxLength={200}
+        placeholder="image / GIF / WebM link"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+      />
+      {err && <div className="muted errline">{err}</div>}
+    </div>
+  );
+}
+
 export function Toasts() {
   const { toasts, dismiss } = useStore();
   return (

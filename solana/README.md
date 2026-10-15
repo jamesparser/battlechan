@@ -59,9 +59,19 @@ and the 125-slot ring-buffer archive + karma resurrect.
   array blows the 4096-byte SBF stack frame).
 * ✅ `anchor test`: 6/6 pass on a local validator.
 * ✅ Frontend `npm run build` (tsc + vite) succeeds, wired to the fresh IDL and program id.
-* ✅ Deployed scripts ready (`scripts/deploy-devnet.sh`, `scripts/init.ts`) — live devnet deploy requires
-  a funded devnet wallet (~6 SOL); the CLI airdrop and web faucet are both rate-limited, so the deploy
-  waits on funding (devnet tokens are free test currency).
+* ✅ **Live on Solana devnet.** Program `FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk`
+  (deploy completed 2026-10-05). `init.ts` created config, 7 seeded categories, admin profile, and both mints.
+* ✅ Frontend rebuilt with the fresh IDL and pointed at devnet: **https://battlechan.vercel.app**
+  (Vercel Authentication off — open to judges).
+
+### Live addresses (devnet)
+
+| Item | Address |
+|---|---|
+| Program | [`FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk`](https://explorer.solana.com/address/FB7wxgXLa3ryZiLMuPDs5iZ4WcQcHd3bgjMhbXJnzeGk?cluster=devnet) |
+| $TIME mint | [`6Y8Z92BoLsaEUkYFCoxC391ZKETbmwoYWw1D9iWscLwi`](https://explorer.solana.com/address/6Y8Z92BoLsaEUkYFCoxC391ZKETbmwoYWw1D9iWscLwi?cluster=devnet) — 100B supply, 6 decimals, mint authority revoked |
+| $KARMA mint | [`FQczvmprTFaAuocypJe5ePNEocoARUkdT8Ed9rQNY3Gm`](https://explorer.solana.com/address/FQczvmprTFaAuocypJe5ePNEocoARUkdT8Ed9rQNY3Gm?cluster=devnet) — 1T cap, program-minted |
+| Frontend | https://battlechan.vercel.app |
 * Not built: AI features (post/comment assist, image gen, user clones, adult filter — media-blur toggle only),
   real Metaplex NFT minting (posts trade via `trade_post`), Plug/Stoic wallets (ICP-only; replaced by Phantom/Solflare).
 * DAO vote weight is $TIME balance at vote time (no snapshot) — fine for a demo.

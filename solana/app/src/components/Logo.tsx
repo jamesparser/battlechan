@@ -1,9 +1,16 @@
 /** BattleChan mark (shamrock + crossed swords), from the design board. 840x735 source, shown framed like the wireframe. */
-export function Logo({ size = 120 }: { size?: number }) {
+export function Logo({ size = 120, onClick }: { size?: number; onClick?: () => void }) {
   return (
-    <span className="logo-frame" style={{ ["--logo-h" as any]: size + "px" }}>
+    <button
+      type="button"
+      className="logo-frame logo-home"
+      style={{ ["--logo-h" as any]: size + "px" }}
+      onClick={onClick}
+      title="Home"
+      aria-label="BattleChan home"
+    >
       <img src="/logo-mark.png" srcSet="/logo-mark-sm.png 1x, /logo-mark.png 2x" alt="BattleChan" height={size} width={Math.round((size * 840) / 735)} decoding="async" />
-    </span>
+    </button>
   );
 }
 

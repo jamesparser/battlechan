@@ -83,11 +83,12 @@ function Shell() {
 
       <header className="frame head">
         <Star href={swap} />
-        <div className="logoblock" onClick={() => go("arena")}>
-          <Logo size={118} />
+        <div className="logoblock" onClick={() => { go("arena"); setComposer(false); setPage(1); }} role="button" tabIndex={0}
+          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go("arena"); setComposer(false); setPage(1); } }}>
+          <Logo size={118} onClick={() => { go("arena"); setComposer(false); setPage(1); }} />
           <div className="title">BattleCHAN</div>
         </div>
-        <button className="greenbtn createbtn" onClick={() => { go("arena"); setComposer((c) => !c); }}>Create Post</button>
+        <button className="greenbtn createbtn" onClick={() => { go("arena"); setComposer(true); }}>Create Post</button>
       </header>
 
       <nav className="bar">
